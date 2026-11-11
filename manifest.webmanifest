@@ -1,0 +1,15 @@
+{
+  "name": "FormPilot AI: browser agent for forms and bookings",
+  "short_name": "FormPilot",
+  "description": "A browser agent that fills forms and books appointments on sandbox sites, with an approval gate before every submit.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#14213d",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

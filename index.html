@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#14213d">
+<meta name="description" content="FormPilot AI is a browser agent that fills forms and books appointments on built-in fictional sandbox sites. It asks before anything is submitted, never types passwords or card numbers, and ignores instructions hidden in pages. Demo mode needs no key; bring your own AI key or run the optional local Playwright runner for real sites.">
+<title>FormPilot AI · Browser agent that fills forms and books appointments</title>
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./styles.css">
+<script>try{var t=localStorage.getItem('fp.theme');if(t==='"dark"'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#goal">Skip to the goal box</a>
+<header class="top">
+  <a class="brand" href="./" aria-label="FormPilot AI home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="10" width="40" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="5"/><path d="M17 24h22M17 34h14" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M38 36l18 8-8 3-3 8z" fill="currentColor"/></svg><span>FormPilot <b>AI</b></span></a>
+  <span class="tag hide-sm">BROWSER AGENT</span>
+  <nav>
+    <button id="btn-about" type="button" title="How it works and limits">ⓘ <span class="hide-sm">Limits</span></button>
+    <button id="btn-theme" type="button" aria-label="Toggle light or dark theme">◐</button>
+    <button id="btn-profile" type="button">👤 <span class="hide-sm">Profile</span></button>
+    <button id="btn-settings" type="button">⚙ <span class="hide-sm">Settings</span></button>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <p class="eyebrow">PROJECT 08 · THE BROWSER AGENT</p>
+    <h1>Say the goal. It fills the form. <em>You</em> approve the submit.</h1>
+    <p class="lede">FormPilot reads a page the way a screen reader does, then clicks, types and picks dates step by step while you watch. It asks you for anything missing, hands passwords and card numbers to you, ignores instructions hidden in pages, and always stops for your OK before it books, sends or pays. Try it on five fictional sandbox sites. Demo mode needs no key.</p>
+    <div class="status-row"><span id="mode-pill" class="pill">Demo planner · no key</span><span id="dry-pill" class="pill warn" hidden>Dry run</span><span id="offline-pill" class="pill warn" hidden>Offline</span></div>
+  </section>
+
+  <div class="layout">
+    <section class="panel control" aria-labelledby="ctl-h">
+      <h2 id="ctl-h" class="sr-only">Agent</h2>
+      <div class="field"><label for="site">Site</label><select id="site"></select></div>
+      <div id="runner-box" class="runner-box" hidden>
+        <div class="field"><label for="runner-url">Start page on the real site</label><input id="runner-url" type="url" placeholder="https://example.com/booking" autocomplete="off"></div>
+        <div class="row"><button type="button" id="runner-connect" class="small-btn">Check runner</button><span id="runner-status" class="muted small">Runner not checked.</span></div>
+      </div>
+      <form id="goal-form" novalidate>
+        <div class="field"><label for="goal">Goal</label><textarea id="goal" rows="3" maxlength="600" placeholder="e.g. Book a cleaning with Dr. Patel next Tuesday after 3pm" autocomplete="off"></textarea></div>
+        <div class="samples-wrap"><span class="muted small">Try:</span><div id="samples" class="samples"></div></div>
+        <div class="opts">
+          <div class="seg" role="group" aria-label="Who plans the steps"><button type="button" id="mode-rules" aria-pressed="true">Demo planner</button><button type="button" id="mode-llm" aria-pressed="false">Your AI</button></div>
+          <label class="inline"><input type="checkbox" id="dry-run"> Dry run</label>
+          <label class="inline">Speed <select id="speed" aria-label="Animation speed"><option value="slow">Slow</option><option value="normal" selected>Normal</option><option value="fast">Fast</option></select></label>
+        </div>
+        <div class="run-row">
+          <button id="run-btn" class="primary" type="submit">▶ Run agent</button>
+          <button id="stop-btn" class="danger" type="button" disabled>■ Stop</button>
+          <button id="rec-btn" type="button" title="Record your own steps on this site as a reusable recipe">● Record</button>
+        </div>
+      </form>
+      <div id="log" class="log" aria-live="polite" aria-label="Agent step log"><div class="empty small muted">Steps, reasoning and questions appear here. The agent pauses for your approval before any final submit.</div></div>
+    </section>
+
+    <section class="panel browser" aria-label="Sandbox browser">
+      <div class="chrome">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <button type="button" id="b-reload" class="icon-btn" aria-label="Reload the site" title="Reload the site">↻</button>
+        <div class="addr" id="addr"><span class="lock" aria-hidden="true">🔒</span><span id="addr-text">about:blank</span></div>
+        <span id="sandbox-badge" class="pill small-pill">sandbox</span>
+        <button type="button" id="b-snap" class="icon-btn" aria-label="What the agent sees" title="What the agent sees (snapshot)">⌗</button>
+      </div>
+      <div id="ribbon" class="ribbon" hidden></div>
+      <div class="stage" id="stage">
+        <iframe id="site-frame" title="Sandbox site" sandbox="allow-scripts allow-same-origin allow-forms" src="about:blank"></iframe>
+        <div class="fp-hl" hidden></div>
+        <div class="fp-cursor" hidden aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 2l7 19 2.6-7.4L20 11z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <div id="runner-view" class="runner-view" hidden></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel lower" aria-label="History, recipes and bookings">
+    <div class="lower-head">
+      <div class="seg" role="tablist" aria-label="Saved work">
+        <button type="button" id="tab-history" role="tab" aria-selected="true" aria-pressed="true">Runs <span id="c-history" class="count-badge">0</span></button>
+        <button type="button" id="tab-recipes" role="tab" aria-selected="false" aria-pressed="false">Recipes <span id="c-recipes" class="count-badge">0</span></button>
+        <button type="button" id="tab-bookings" role="tab" aria-selected="false" aria-pressed="false">Sandbox bookings <span id="c-bookings" class="count-badge">0</span></button>
+      </div>
+      <span class="spacer"></span>
+      <div id="lower-tools" class="lower-tools"></div>
+    </div>
+    <div id="lower-body" class="lower-body"></div>
+  </section>
+</main>
+<footer class="foot">
+  <p>Everything runs in your browser. The sandbox sites, people and *.example domains are fictional; no real bookings are made. In “Your AI” mode the page snapshot, your goal and the names of your profile fields go to the provider you choose (profile values stay here unless you allow them). Your key stays in this browser and never goes into reports, recipes or exports.</p>
+  <p><a href="https://github.com/shaikbasha1437/formpilot-ai" target="_blank" rel="noopener">Source on GitHub ↗</a> · MIT license · optional <a href="https://github.com/shaikbasha1437/formpilot-ai/tree/main/runner" target="_blank" rel="noopener">local Playwright runner ↗</a></p>
+</footer>
+<div id="modal-host"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="./js/llm.js"></script>
+<script src="./js/snapshot.js"></script>
+<script src="./js/guard.js"></script>
+<script src="./js/goal.js"></script>
+<script src="./js/planner.js"></script>
+<script src="./js/llmplanner.js"></script>
+<script src="./js/agent.js"></script>
+<script src="./js/env.js"></script>
+<script src="./js/recorder.js"></script>
+<script src="./js/ics.js"></script>
+<script src="./js/report.js"></script>
+<script src="./js/store.js"></script>
+<script src="./js/webllm.js"></script>
+<script src="./js/app.js"></script>
+<script>if('serviceWorker' in navigator)addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});</script>
+</body>
+</html>
