@@ -6,6 +6,8 @@
   else root.FormPilotAgent = factory(root.FormPilotSnapshot, root.FormPilotGuard, root.FormPilotPlanner, root.FormPilotGoal);
 })(typeof self !== 'undefined' ? self : this, function (SNAP, GUARD, RULES, G) {
   'use strict';
+  /* Waiting on the human (question, hand-off, approval) still ends the moment Stop is pressed. */
+  const untilStop = (p, signal) => !signal ? Promise.resolve(p) : new Promise((res, rej) => { if (signal.aborted) return rej(stopErr()); const on = () => rej(stopErr()); signal.addEventListener('abort', on, { once: true }); Promise.resolve(p).then((v) => { signal.removeEventListener('abort', on); res(v); }, (e) => { signal.removeEventListener('abort', on); rej(e); }); });
   const sleep = (ms, signal) => new Promise((res, rej) => { if (signal && signal.aborted) return rej(stopErr()); const t = setTimeout(res, ms); if (signal) signal.addEventListener('abort', () => { clearTimeout(t); rej(stopErr()); }, { once: true }); });
   function stopErr() { const e = new Error('Stopped by you.'); e.stopped = true; return e; }
   function describe(a, it) {
@@ -68,7 +70,7 @@
         if (!GUARD.hostAllowed(snap.host, s.allowlist)) return finish('failed', 'The page is on ' + (snap.host || 'an unknown site') + ', which is not on your allowlist. FormPilot stopped.');
         for (const f of GUARD.scanInjection(snap)) { if (seenFlags.has(f.text)) continue; seenFlags.add(f.text); ctx.flags.push(f); log({ kind: 'flag', text: 'Ignored instructions found in the page (' + f.where + '): "' + f.text.slice(0, 220) + '" — ' + f.why + '. FormPilot treats page text as data only.', flag: f }); }
         let d;
-        try { d = await o.planner.next(snap, ctx); } catch (e) { if (e && e.stopped) throw e; return finish('error', e.message || String(e)); }
+        try { d = await untilStop(o.planner.next(snap, ctx), signal); } catch (e) { if (e && e.stopped) throw e; return finish('error', e.message || String(e)); }
         if (signal && signal.aborted) throw stopErr();
         for (const ev of ctx.events.splice(0)) log({ kind: ev.type === 'replan' ? 'replan' : 'note', text: ev.text });
         const a = d.action || { type: 'fail', reason: 'No action.' };
@@ -78,7 +80,7 @@
         if (a.type === 'fail') { log({ kind: 'fail', thought: d.thought, text: a.reason || 'Could not continue.', snapshot: SNAP.render(snap), rects: rects(snap) }); return finish('failed', a.reason || d.thought); }
         if (a.type === 'ask') {
           log({ kind: 'ask', thought: d.thought, text: a.question });
-          const ans = await (hooks.ask ? hooks.ask(a, ctx) : null);
+          const ans = await untilStop(hooks.ask ? hooks.ask(a, ctx) : null, signal);
           if (signal && signal.aborted) throw stopErr();
           if (ans == null || ans === false) return finish('stopped', 'You stopped the run at a question.');
           const val = typeof ans === 'object' ? ans.value : ans;
@@ -90,7 +92,7 @@
         if (a.type === 'handoff') {
           log({ kind: 'handoff', thought: d.thought, text: 'Your turn: ' + (a.fields || []).join(', ') });
           if (o.env.highlight) await o.env.highlight(a.refs || [a.ref], 'human');
-          const ok = await (hooks.handoff ? hooks.handoff(a, ctx) : false);
+          const ok = await untilStop(hooks.handoff ? hooks.handoff(a, ctx) : false, signal);
           if (o.env.clearHighlight) o.env.clearHighlight();
           if (signal && signal.aborted) throw stopErr();
           if (!ok) return finish('stopped', 'You stopped the run instead of filling the sensitive field.');
@@ -103,15 +105,15 @@
         if (!chk.ok) {
           log({ kind: 'blocked', thought: d.thought, text: chk.reason, action: describe(a, it) });
           ctx.lastResult = 'BLOCKED by FormPilot: ' + chk.reason; ctx.history.push(describe(a, it) + ' → blocked: ' + chk.reason);
-          if (chk.kind === 'sensitive') { const h = { type: 'handoff', ref: a.ref, refs: [a.ref], fields: [it.name], kinds: [chk.sensitive] }; log({ kind: 'handoff', text: 'Your turn: ' + it.name }); if (o.env.highlight) await o.env.highlight([a.ref], 'human'); const ok = await (hooks.handoff ? hooks.handoff(h, ctx) : false); if (o.env.clearHighlight) o.env.clearHighlight(); if (!ok) return finish('stopped', 'You stopped the run instead of filling the sensitive field.'); ctx.handedOff.push(it.name); }
+          if (chk.kind === 'sensitive') { const h = { type: 'handoff', ref: a.ref, refs: [a.ref], fields: [it.name], kinds: [chk.sensitive] }; log({ kind: 'handoff', text: 'Your turn: ' + it.name }); if (o.env.highlight) await o.env.highlight([a.ref], 'human'); const ok = await untilStop(hooks.handoff ? hooks.handoff(h, ctx) : false, signal); if (o.env.clearHighlight) o.env.clearHighlight(); if (!ok) return finish('stopped', 'You stopped the run instead of filling the sensitive field.'); ctx.handedOff.push(it.name); }
           if (++blocked > 6) return finish('failed', 'Too many blocked actions; stopping for safety.');
           continue;
         }
         if (chk.kind === 'final' || a.type === 'submit') {
           const summary = buildSummary(ctx, snap, it);
           log({ kind: 'gate', thought: d.thought, text: (s.dryRun ? 'Dry run: would click ' : 'Waiting for your approval to click ') + '"' + (it ? it.name : 'submit') + '".', summary });
-          if (s.dryRun) { if (hooks.dryRunReview) await hooks.dryRunReview(summary); return finish('dry-run', 'Dry run finished before "' + (it ? it.name : 'submit') + '". Nothing was submitted.', { summary }); }
-          const ok = await (hooks.approve ? hooks.approve(summary, ctx) : false);
+          if (s.dryRun) { if (hooks.dryRunReview) await untilStop(hooks.dryRunReview(summary), signal).catch(() => {}); return finish('dry-run', 'Dry run finished before "' + (it ? it.name : 'submit') + '". Nothing was submitted.', { summary }); }
+          const ok = await untilStop(hooks.approve ? hooks.approve(summary, ctx) : false, signal);
           if (signal && signal.aborted) throw stopErr();
           if (!ok) { log({ kind: 'declined', text: 'You declined. Nothing was submitted.' }); return finish('declined', 'You declined the final step. Nothing was submitted.', { summary }); }
           log({ kind: 'approved', text: 'You approved "' + (it ? it.name : 'submit') + '".' });
@@ -123,6 +125,7 @@
         const step = log({ kind: 'action', thought: d.thought, action: describe(a, it), type: a.type, target: it ? it.name : null, role: it ? it.role : null, group: it && it.group ? it.group : undefined, value: a.type === 'type' || a.type === 'select' ? GUARD.mask(it, a.value) : undefined, snapshot: SNAP.render(snap), rects: rects(snap, a.ref), url: snap.url });
         const res = await o.env.act(Object.assign({}, a, { type: a.type === 'submit' ? 'click' : a.type }), { signal, approved: chk.kind === 'final' });
         step.result = res.ok ? 'ok' : res.error; step.ok = !!res.ok;
+        if (!res.ok && res.dryRun) { if (hooks.onStepUpdate) hooks.onStepUpdate(step, out); return finish('dry-run', res.error || 'The runner is in dry-run mode, so nothing was submitted.'); }
         if (hooks.onStepUpdate) hooks.onStepUpdate(step, out);
         ctx.lastResult = res.ok ? 'ok' : 'error: ' + res.error;
         ctx.history.push(describe(a, it) + (a.value && !(it && it.sensitive) ? ' = "' + String(a.value).slice(0, 60) + '"' : '') + ' → ' + (res.ok ? 'ok' : res.error));

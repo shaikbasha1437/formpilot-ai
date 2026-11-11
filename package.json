@@ -1,0 +1,8 @@
+{
+  "name": "formpilot-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A browser agent that fills forms and books appointments on sandbox sites, with an approval gate before every submit.",
+  "license": "MIT",
+  "scripts": { "test": "node --test test/*.test.js" }
+}

@@ -1,0 +1,337 @@
+{
+ "url": "https://permits.maplewood.example/applicant",
+ "host": "permits.maplewood.example",
+ "title": "Special event permit · City of Maplewood Permit Center",
+ "busy": false,
+ "dialogs": [],
+ "items": [
+  {
+   "role": "text",
+   "name": "An official-looking website of the fictional City of Maplewood (sandbox).",
+   "bbox": {
+    "x": 0,
+    "y": 0,
+    "w": 900,
+    "h": 26
+   },
+   "dialog": ""
+  },
+  {
+   "role": "text",
+   "name": "Maplewood Permit Center",
+   "bbox": {
+    "x": 18,
+    "y": 38,
+    "w": 247,
+    "h": 29
+   },
+   "dialog": ""
+  },
+  {
+   "ref": "e1",
+   "role": "link",
+   "name": "Apply",
+   "href": "http://127.0.0.1:44111/sandbox/permit/index.html#/applicant",
+   "bbox": {
+    "x": 774,
+    "y": 42,
+    "w": 32,
+    "h": 20
+   }
+  },
+  {
+   "ref": "e2",
+   "role": "link",
+   "name": "Fees",
+   "href": "http://127.0.0.1:44111/sandbox/permit/index.html#/applicant",
+   "bbox": {
+    "x": 818,
+    "y": 42,
+    "w": 26,
+    "h": 20
+   }
+  },
+  {
+   "ref": "e3",
+   "role": "link",
+   "name": "Help",
+   "href": "http://127.0.0.1:44111/sandbox/permit/index.html#/applicant",
+   "bbox": {
+    "x": 856,
+    "y": 42,
+    "w": 26,
+    "h": 20
+   }
+  },
+  {
+   "role": "text",
+   "name": "Special event permit application",
+   "bbox": {
+    "x": 88,
+    "y": 98,
+    "w": 724,
+    "h": 23
+   },
+   "dialog": ""
+  },
+  {
+   "role": "text",
+   "name": "Step 1: Applicant",
+   "bbox": {
+    "x": 88,
+    "y": 120,
+    "w": 107,
+    "h": 24
+   },
+   "dialog": ""
+  },
+  {
+   "role": "text",
+   "name": "Step 2: Event details",
+   "bbox": {
+    "x": 201,
+    "y": 120,
+    "w": 119,
+    "h": 24
+   },
+   "dialog": ""
+  },
+  {
+   "role": "text",
+   "name": "Step 3: Review and submit",
+   "bbox": {
+    "x": 326,
+    "y": 120,
+    "w": 150,
+    "h": 24
+   },
+   "dialog": ""
+  },
+  {
+   "role": "heading",
+   "name": "Step 1 of 3: About you",
+   "bbox": {
+    "x": 88,
+    "y": 154,
+    "w": 724,
+    "h": 36
+   },
+   "dialog": "",
+   "level": 1,
+   "hidden": false
+  },
+  {
+   "role": "alert",
+   "name": "Please fix 1 problem: · Enter the phone number as (555) 555-0123.",
+   "bbox": {
+    "x": 105,
+    "y": 219,
+    "w": 690,
+    "h": 71
+   },
+   "dialog": ""
+  },
+  {
+   "ref": "e4",
+   "role": "textbox",
+   "name": "First name (required)",
+   "type": "text",
+   "autocomplete": "given-name",
+   "required": true,
+   "value": "Jordan",
+   "bbox": {
+    "x": 105,
+    "y": 327,
+    "w": 339,
+    "h": 43
+   }
+  },
+  {
+   "ref": "e5",
+   "role": "textbox",
+   "name": "Last name (required)",
+   "type": "text",
+   "autocomplete": "family-name",
+   "required": true,
+   "value": "Rivera",
+   "bbox": {
+    "x": 456,
+    "y": 327,
+    "w": 339,
+    "h": 43
+   }
+  },
+  {
+   "ref": "e6",
+   "role": "textbox",
+   "name": "Date of birth (required)",
+   "type": "text",
+   "placeholder": "MM/DD/YYYY",
+   "required": true,
+   "value": "03/08/1994",
+   "bbox": {
+    "x": 105,
+    "y": 407,
+    "w": 339,
+    "h": 43
+   }
+  },
+  {
+   "role": "text",
+   "name": "Applicants must be 18 or older.",
+   "bbox": {
+    "x": 105,
+    "y": 451,
+    "w": 339,
+    "h": 19
+   },
+   "dialog": ""
+  },
+  {
+   "ref": "e7",
+   "role": "textbox",
+   "name": "Daytime phone (required)",
+   "type": "tel",
+   "autocomplete": "tel",
+   "required": true,
+   "invalid": true,
+   "description": "Enter the phone number as (555) 555-0123.",
+   "error": "Enter the phone number as (555) 555-0123.",
+   "value": "214-555-0142",
+   "bbox": {
+    "x": 456,
+    "y": 407,
+    "w": 339,
+    "h": 43
+   }
+  },
+  {
+   "role": "alert",
+   "name": "Enter the phone number as (555) 555-0123.",
+   "bbox": {
+    "x": 456,
+    "y": 452,
+    "w": 339,
+    "h": 20
+   },
+   "dialog": ""
+  },
+  {
+   "ref": "e8",
+   "role": "textbox",
+   "name": "Email address (required)",
+   "type": "email",
+   "autocomplete": "email",
+   "required": true,
+   "value": "jordan.rivera@mail.example",
+   "bbox": {
+    "x": 105,
+    "y": 509,
+    "w": 690,
+    "h": 43
+   }
+  },
+  {
+   "ref": "e9",
+   "role": "textbox",
+   "name": "Street address (required)",
+   "type": "text",
+   "autocomplete": "street-address",
+   "required": true,
+   "value": "742 Maple Ave",
+   "bbox": {
+    "x": 105,
+    "y": 588,
+    "w": 690,
+    "h": 43
+   }
+  },
+  {
+   "ref": "e10",
+   "role": "textbox",
+   "name": "City (required)",
+   "type": "text",
+   "required": true,
+   "value": "Maplewood",
+   "bbox": {
+    "x": 105,
+    "y": 668,
+    "w": 339,
+    "h": 43
+   }
+  },
+  {
+   "ref": "e11",
+   "role": "combobox",
+   "name": "State (required)",
+   "type": "select",
+   "required": true,
+   "value": "Texas",
+   "options": [
+    "Alabama",
+    "Arizona",
+    "California",
+    "Colorado",
+    "Florida",
+    "Georgia",
+    "Illinois",
+    "New York",
+    "Ohio",
+    "Oregon",
+    "Texas",
+    "Washington"
+   ],
+   "bbox": {
+    "x": 456,
+    "y": 668,
+    "w": 339,
+    "h": 43
+   }
+  },
+  {
+   "ref": "e12",
+   "role": "textbox",
+   "name": "ZIP code (required)",
+   "type": "text",
+   "autocomplete": "postal-code",
+   "required": true,
+   "value": "75099",
+   "bbox": {
+    "x": 105,
+    "y": 748,
+    "w": 690,
+    "h": 43
+   }
+  },
+  {
+   "ref": "e13",
+   "role": "button",
+   "name": "Next: event details",
+   "bbox": {
+    "x": 105,
+    "y": 802,
+    "w": 153,
+    "h": 45
+   }
+  },
+  {
+   "role": "text",
+   "name": "City of Maplewood is fictional. Applications are stored only in your browser.",
+   "bbox": {
+    "x": 0,
+    "y": 906,
+    "w": 900,
+    "h": 58
+   },
+   "dialog": ""
+  }
+ ],
+ "hiddenText": [],
+ "viewport": {
+  "w": 900,
+  "h": 900,
+  "scrollY": 0,
+  "docH": 976
+ },
+ "at": 1794413041386
+}

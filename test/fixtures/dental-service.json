@@ -1,0 +1,240 @@
+{
+ "url": "https://brightsmile-dental.example/service",
+ "host": "brightsmile-dental.example",
+ "title": "Book online · BrightSmile Dental",
+ "busy": false,
+ "dialogs": [],
+ "items": [
+  {
+   "role": "text",
+   "name": "BrightSmile Dental",
+   "bbox": {
+    "x": 18,
+    "y": 12,
+    "w": 211,
+    "h": 29
+   },
+   "dialog": ""
+  },
+  {
+   "ref": "e1",
+   "role": "link",
+   "name": "Book online",
+   "href": "http://127.0.0.1:44111/sandbox/dental/index.html#/service",
+   "bbox": {
+    "x": 641,
+    "y": 16,
+    "w": 75,
+    "h": 20
+   }
+  },
+  {
+   "ref": "e2",
+   "role": "link",
+   "name": "Our dentists",
+   "href": "http://127.0.0.1:44111/sandbox/dental/index.html#/service",
+   "bbox": {
+    "x": 729,
+    "y": 16,
+    "w": 78,
+    "h": 20
+   }
+  },
+  {
+   "ref": "e3",
+   "role": "link",
+   "name": "Insurance",
+   "href": "http://127.0.0.1:44111/sandbox/dental/index.html#/service",
+   "bbox": {
+    "x": 819,
+    "y": 16,
+    "w": 63,
+    "h": 20
+   }
+  },
+  {
+   "role": "text",
+   "name": "Service",
+   "bbox": {
+    "x": 88,
+    "y": 72,
+    "w": 61,
+    "h": 24
+   },
+   "dialog": ""
+  },
+  {
+   "role": "text",
+   "name": "Dentist",
+   "bbox": {
+    "x": 155,
+    "y": 72,
+    "w": 58,
+    "h": 24
+   },
+   "dialog": ""
+  },
+  {
+   "role": "text",
+   "name": "Date & time",
+   "bbox": {
+    "x": 219,
+    "y": 72,
+    "w": 85,
+    "h": 24
+   },
+   "dialog": ""
+  },
+  {
+   "role": "text",
+   "name": "Your details",
+   "bbox": {
+    "x": 310,
+    "y": 72,
+    "w": 84,
+    "h": 24
+   },
+   "dialog": ""
+  },
+  {
+   "role": "text",
+   "name": "Review",
+   "bbox": {
+    "x": 401,
+    "y": 72,
+    "w": 57,
+    "h": 24
+   },
+   "dialog": ""
+  },
+  {
+   "role": "heading",
+   "name": "Book a visit",
+   "bbox": {
+    "x": 88,
+    "y": 106,
+    "w": 724,
+    "h": 36
+   },
+   "dialog": "",
+   "level": 1,
+   "hidden": false
+  },
+  {
+   "role": "text",
+   "name": "New and returning patients welcome. Choose what you need.",
+   "bbox": {
+    "x": 88,
+    "y": 146,
+    "w": 724,
+    "h": 23
+   },
+   "dialog": ""
+  },
+  {
+   "ref": "e4",
+   "role": "radio",
+   "name": "Cleaning · 45 min · routine hygiene visit",
+   "type": "radio",
+   "field": "service",
+   "group": "Service",
+   "checked": false,
+   "bbox": {
+    "x": 123,
+    "y": 249,
+    "w": 13,
+    "h": 13
+   }
+  },
+  {
+   "ref": "e5",
+   "role": "radio",
+   "name": "Checkup & X-rays · 30 min",
+   "type": "radio",
+   "field": "service",
+   "group": "Service",
+   "checked": false,
+   "bbox": {
+    "x": 123,
+    "y": 318,
+    "w": 13,
+    "h": 13
+   }
+  },
+  {
+   "ref": "e6",
+   "role": "radio",
+   "name": "Whitening consultation · 30 min",
+   "type": "radio",
+   "field": "service",
+   "group": "Service",
+   "checked": false,
+   "bbox": {
+    "x": 123,
+    "y": 387,
+    "w": 13,
+    "h": 13
+   }
+  },
+  {
+   "ref": "e7",
+   "role": "radio",
+   "name": "Filling · 60 min",
+   "type": "radio",
+   "field": "service",
+   "group": "Service",
+   "checked": false,
+   "bbox": {
+    "x": 123,
+    "y": 456,
+    "w": 13,
+    "h": 13
+   }
+  },
+  {
+   "ref": "e8",
+   "role": "radio",
+   "name": "Tooth pain / emergency · Same-week visits",
+   "type": "radio",
+   "field": "service",
+   "group": "Service",
+   "checked": false,
+   "bbox": {
+    "x": 123,
+    "y": 526,
+    "w": 13,
+    "h": 13
+   }
+  },
+  {
+   "ref": "e9",
+   "role": "button",
+   "name": "Continue",
+   "bbox": {
+    "x": 105,
+    "y": 594,
+    "w": 101,
+    "h": 45
+   }
+  },
+  {
+   "role": "text",
+   "name": "BrightSmile Dental is a fictional practice in the FormPilot sandbox. No real appointments are made.",
+   "bbox": {
+    "x": 0,
+    "y": 697,
+    "w": 900,
+    "h": 58
+   },
+   "dialog": ""
+  }
+ ],
+ "hiddenText": [],
+ "viewport": {
+  "w": 900,
+  "h": 900,
+  "scrollY": 0,
+  "docH": 900
+ },
+ "at": 1794413037752
+}
