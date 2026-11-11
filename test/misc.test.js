@@ -52,3 +52,7 @@ test('sandbox: Harvest supper Friday 6 PM has 2 seats, 8:30 PM has room, Saturda
   const sat = s.find((x) => x.date === '2026-11-14'); assert.equal(sat.left, 0);
 });
 test('sandbox: Luhn check for the test card', () => { assert.ok(F.luhn('4242 4242 4242 4242')); assert.ok(!F.luhn('4242 4242 4242 4241')); });
+test('recorder: slot steps drop the date-specific group so recipes work on new dates', () => {
+  const s = REC.suggest([{ type: 'click', target: { role: 'button', name: '9:00 AM', group: 'Available times on Thursday, November 12, 2026' } }], P.DEFAULT_PROFILE);
+  assert.equal(s.steps[0].target.name, '{{time}}'); assert.equal(s.steps[0].target.group, undefined);
+});

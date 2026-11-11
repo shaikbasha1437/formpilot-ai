@@ -67,7 +67,7 @@
         if (out.steps.filter((x) => x.kind === 'action').length >= maxSteps) return finish('failed', 'Reached the limit of ' + maxSteps + ' steps without finishing.');
         const snap = await o.env.snapshot();
         if (signal && signal.aborted) throw stopErr();
-        if (!GUARD.hostAllowed(snap.host, s.allowlist)) return finish('failed', 'The page is on ' + (snap.host || 'an unknown site') + ', which is not on your allowlist. FormPilot stopped.');
+        if (!GUARD.hostAllowed(snap.host, s.allowlist)) { const why = 'The page is on ' + (snap.host || 'an unknown site') + ', which is not on your allowlist. FormPilot stopped.'; log({ kind: 'blocked', text: why, rects: rects(snap) }); return finish('failed', why); }
         for (const f of GUARD.scanInjection(snap)) { if (seenFlags.has(f.text)) continue; seenFlags.add(f.text); ctx.flags.push(f); log({ kind: 'flag', text: 'Ignored instructions found in the page (' + f.where + '): "' + f.text.slice(0, 220) + '" — ' + f.why + '. FormPilot treats page text as data only.', flag: f }); }
         let d;
         try { d = await untilStop(o.planner.next(snap, ctx), signal); } catch (e) { if (e && e.stopped) throw e; return finish('error', e.message || String(e)); }
@@ -145,11 +145,12 @@
     return {
       name: 'recipe', label: 'Recipe: ' + recipe.name,
       async next(snap, ctx) {
-        if (i >= recipe.steps.length) { const doneText = (snap.items || []).find((x) => !x.ref && RULES.DONE_RE.test(x.name)); return doneText ? { thought: 'All recipe steps ran and the site confirms.', action: { type: 'done' } } : misses++ < 6 ? { thought: 'Waiting for the confirmation page.', action: { type: 'wait', ms: 300 } } : { thought: 'Recipe finished.', action: { type: 'done' } }; }
+        if (i >= recipe.steps.length) { const doneText = (snap.items || []).find((x) => !x.ref && RULES.DONE_RE.test(x.name)); return doneText ? { thought: 'All recipe steps ran and the site confirms.', action: { type: 'done' } } : misses++ < 6 ? { thought: 'Waiting for the confirmation page.', action: { type: 'wait', ms: 300 } } : { thought: 'All recipe steps ran, but no confirmation appeared.', action: { type: 'fail', reason: 'The recipe ran all its steps but the site did not show a confirmation. Check the page.' } }; }
         const st = recipe.steps[i];
         const name = low(sub(st.target.name));
         const cands = (snap.items || []).filter((x) => x.ref && x.role === st.target.role && !x.dialog === !st.target.dialog && (low(x.name) === name || low(x.name).startsWith(name + ',') || low(x.name).startsWith(name + ' ·') || (name.length > 6 && low(x.name).startsWith(name))) && (!st.target.group || low(x.group) === low(st.target.group) || /\{\{/.test(st.target.group || '')));
-        const it = cands.find((x) => !x.disabled) || cands[0];
+        let it = cands.find((x) => !x.disabled) || cands[0];
+        if (!it && st.target.group) { const loose = (snap.items || []).filter((x) => x.ref && x.role === st.target.role && !x.dialog === !st.target.dialog && (low(x.name) === name || low(x.name).startsWith(name + ',') || low(x.name).startsWith(name + ' ·'))); it = loose.find((x) => !x.disabled) || loose[0]; } // section titles can change (e.g. they name the date)
         if (!it) { if (misses++ < 12) return { thought: 'Waiting for "' + sub(st.target.name) + '" (step ' + (i + 1) + ').', action: { type: 'wait', ms: 250 } }; return { thought: 'Step ' + (i + 1) + ' target not found.', action: { type: 'fail', reason: 'Recipe step ' + (i + 1) + ': could not find ' + st.target.role + ' "' + sub(st.target.name) + '" on the page.' } }; }
         misses = 0; i++;
         if (st.type === 'handoff') return { thought: 'Recorded as a sensitive field: your turn.', action: { type: 'handoff', ref: it.ref, refs: [it.ref], fields: [it.name], kinds: [it.sensitive || st.kind] } };

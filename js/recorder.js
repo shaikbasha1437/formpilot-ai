@@ -44,8 +44,8 @@
     if (p.dob) { const [y, m, d] = p.dob.split('-'); pv.push(['dobUS', m + '/' + d + '/' + y]); }
     for (const st of out) {
       if (st.type === 'type' && st.value) { const hit = pv.find(([, v]) => v === st.value); if (hit) { st.value = '{{profile.' + hit[0] + '}}'; continue; } }
-      if (st.type === 'click' && st.target.role === 'button' && RULES.isDateBtn({ role: 'button', name: st.target.name })) { vars.date = { label: 'Date', type: 'date', example: st.target.name }; st.target.name = '{{date}}'; }
-      else if (st.type === 'click' && RULES.isSlotBtn({ role: 'button', name: st.target.name })) { vars.time = { label: 'Time (e.g. 4:00 PM)', type: 'text', example: st.target.name }; st.target.name = '{{time}}'; }
+      if (st.type === 'click' && st.target.role === 'button' && RULES.isDateBtn({ role: 'button', name: st.target.name })) { vars.date = { label: 'Date', type: 'date', example: st.target.name }; st.target.name = '{{date}}'; delete st.target.group; }
+      else if (st.type === 'click' && RULES.isSlotBtn({ role: 'button', name: st.target.name })) { vars.time = { label: 'Time (e.g. 4:00 PM)', type: 'text', example: st.target.name }; st.target.name = '{{time}}'; delete st.target.group; } // the slot group names the old date
     }
     return { steps: out, vars };
   }

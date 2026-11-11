@@ -96,3 +96,10 @@ test('agent: pages off the allowlist stop the run', async () => {
   const env = fakeEnv(); env.snapshot = async () => ({ url: 'https://evil.example/', host: 'evil.example', title: 'x', items: [] });
   const r = await runWith(env, {}); assert.equal(r.status, 'failed'); assert.match(r.reason, /allowlist/);
 });
+test('goal: "Two seats" sets the party size', () => { assert.equal(G.parse('Two seats at the Candlelit Pasta Workshop on Sunday', TODAY, 'rsvp').count, 2); });
+test('agent: a recipe that ends without a confirmation fails instead of claiming success', async () => {
+  const env = { async snapshot() { return { url: 'https://brightsmile-dental.example/x', host: 'brightsmile-dental.example', title: 't', items: [{ ref: 'e1', role: 'button', name: 'Continue' }, { role: 'heading', name: 'Pick a date and time' }] }; }, async act() { return { ok: true }; } };
+  const planner = AGENT.recipePlanner({ name: 'r', steps: [{ type: 'click', target: { role: 'button', name: 'Continue' } }] }, {});
+  const r = await AGENT.run({ env, planner, goalText: 'recipe', goal: G.parse('recipe', TODAY, 'dental'), profile: P.DEFAULT_PROFILE, settings: { maxSteps: 30 }, hooks: {} });
+  assert.equal(r.status, 'failed'); assert.match(r.reason, /no confirmation|did not show a confirmation/);
+});

@@ -80,7 +80,7 @@
   function parseCount(t) {
     let m;
     if ((m = /\b(?:party of|table for|group of|for a group of|seats? for|rsvp for|tickets? for|spots? for|reservation for)\s+(\d{1,3}|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b(?!\s*(?::|am|pm|a\.m|p\.m|o'?clock))/i.exec(t))) return NUM[m[1].toLowerCase()] || +m[1];
-    if ((m = /\b(\d{1,3}|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+(?:people|persons|guests|adults|of us|attendees|neighbors|neighbours)\b/i.exec(t))) return NUM[m[1].toLowerCase()] || +m[1];
+    if ((m = /\b(\d{1,3}|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+(?:people|persons|guests|adults|of us|attendees|neighbors|neighbours|seats|tickets|spots|places)\b/i.exec(t))) return NUM[m[1].toLowerCase()] || +m[1];
     if ((m = /\bfor\s+(\d{1,2}|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b(?!\s*(?::|am|pm|a\.m|p\.m|o'?clock|min|hour|day|week))/i.exec(t))) return NUM[m[1].toLowerCase()] || +m[1];
     if (/\b(me and my|my (wife|husband|partner|friend) and (i|me)|the two of us|for two)\b/i.test(t)) return 2;
     if (/\b(just me|only me|for one|for myself|for me)\b/i.test(t)) return 1;

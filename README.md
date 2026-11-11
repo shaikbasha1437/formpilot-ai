@@ -79,7 +79,7 @@ Chrome and Firefox may ask you to allow the page to access devices on your local
 ## Development
 
 ```bash
-npm test                      # 48 Node tests: goal parser, guard, planner, agent loop, LLM prompts, providers, .ics, reports, recipes, sandbox, runner policy
+npm test                      # 51 Node tests: goal parser, guard, planner, agent loop, LLM prompts, providers, .ics, reports, recipes, sandbox, runner policy
 python3 -m http.server 8080   # then open http://localhost:8080/
 ```
 
